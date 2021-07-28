@@ -42,7 +42,7 @@ export default function LivingRoom() {
             try {
                 const response = await axios({
                     method: 'GET',
-                    url: 'http://192.168.1.3:3001/get-air-quality'
+                    url: 'http://localhost:3001/get-air-quality'
                 });
                 const res = response.data;
                 if (res.success) {
@@ -61,7 +61,7 @@ export default function LivingRoom() {
             try {
                 const response = await axios({
                     method: 'GET',
-                    url: 'http://192.168.1.3:3001/devices1'
+                    url: 'http://localhost:3001/devices1'
                 });
                 const res = response.data;
                 if (res.success && res.automatic) {
@@ -80,7 +80,7 @@ export default function LivingRoom() {
             try {
                 const response = await axios({
                     method: 'PATCH',
-                    url: 'http://192.168.1.3:3001/devices1',
+                    url: 'http://localhost:3001/devices1',
                     data: {automatic: autoLight}
                 });
                 const res = response.data;
@@ -99,7 +99,7 @@ export default function LivingRoom() {
             try {
                 const response = await axios({
                     method: 'PATCH',
-                    url: 'http://192.168.1.3:3001/devices1',
+                    url: 'http://localhost:3001/devices1',
                     data: {'is-on-current': isEnabledLight}
                 });
                 const res = response.data;
@@ -123,7 +123,7 @@ export default function LivingRoom() {
             try {
                 const response = await axios({
                     method: 'GET',
-                    url: 'http://192.168.1.3:3001/devices2'
+                    url: 'http://localhost:3001/devices2'
                 });
                 const res = response.data;
                 if (res.success && res.automatic) {
@@ -142,7 +142,7 @@ export default function LivingRoom() {
             try {
                 const response = await axios({
                     method: 'PATCH',
-                    url: 'http://192.168.1.3:3001/devices2',
+                    url: 'http://localhost:3001/devices2',
                     data: {automatic: autoAir}
                 });
                 const res = response.data;
@@ -161,7 +161,7 @@ export default function LivingRoom() {
             try {
                 const response = await axios({
                     method: 'PATCH',
-                    url: 'http://192.168.1.3:3001/devices2',
+                    url: 'http://localhost:3001/devices2',
                     data: {'is-on-current': isEnabledAir}
                 });
                 const res = response.data;
@@ -184,7 +184,7 @@ export default function LivingRoom() {
             try {
                 const response = await axios({
                     method: 'GET',
-                    url: 'http://192.168.1.3:3001/devices3'
+                    url: 'http://localhost:3001/devices3'
                 });
                 const res = response.data;
                 if (res.success && res.automatic) {
@@ -203,7 +203,7 @@ export default function LivingRoom() {
             try {
                 const response = await axios({
                     method: 'PATCH',
-                    url: 'http://192.168.1.3:3001/devices3',
+                    url: 'http://localhost:3001/devices3',
                     data: {automatic: autoPurifier}
                 });
                 const res = response.data;
@@ -222,7 +222,7 @@ export default function LivingRoom() {
             try {
                 const response = await axios({
                     method: 'PATCH',
-                    url: 'http://192.168.1.3:3001/devices3',
+                    url: 'http://localhost:3001/devices3',
                     data: {'is-on-current': isEnabledPurifier}
                 });
                 const res = response.data;
