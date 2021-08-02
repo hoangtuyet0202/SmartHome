@@ -19,21 +19,17 @@ export default function LivingRoom() {
     const datas = [
         { key: '1', name: 'Air Conditioner' },
         { key: '2', name: 'Light Buld' },
-        { key: '3', name: 'Air Purifier' },
     ];
     const [temperature, setTemperature] = useState(25.00);
     const [humid, setHumid] = useState(80.00);
     const [ppm, setPpm] = useState(40.00);
     const [time, setTime] = useState(0);
+    const [time1, setTime1] = useState(0);
+    const [time2, setTime2] = useState(0);
     const [isEnabledLight, setIsEnabledLight] = useState(false);
     const [isEnabledAir, setIsEnabledAir] = useState(false);
-    const [isEnabledPurifier, setIsEnabledPurifier] = useState(false);
     const [autoLight, setAutoLight] = useState(true);
     const [autoAir, setAutoAir] = useState(true);
-    const [autoPurifier, setAutoPurifier] = useState(true);
-    const [changeAutoLight, setChangeAutoLight] = useState(false);
-    const [changeAutoAir, setChangeAutoAir] = useState(false);
-    const [changeAutoPurifier, setChangeAutoPurifier] = useState(false);
     useEffect(() => {
         setTimeout(() => {
             setTime(time + 1)
@@ -42,7 +38,7 @@ export default function LivingRoom() {
             try {
                 const response = await axios({
                     method: 'GET',
-                    url: 'http://localhost:3001/get-air-quality'
+                    url: 'http://192.168.0.105:3000/api/1/get-air-quality'
                 });
                 const res = response.data;
                 if (res.success) {
@@ -57,14 +53,18 @@ export default function LivingRoom() {
         fetchData();
     }, [time])
     useEffect(() => {
+        setTimeout(() => {
+            setTime1((time1 + 1) % 2)
+        }, 3000);
         const fetchData = async () => {
             try {
                 const response = await axios({
                     method: 'GET',
-                    url: 'http://localhost:3001/devices1'
+                    url: 'http://192.168.0.105:3000/api/6/get-status'
                 });
                 const res = response.data;
-                if (res.success && res.automatic) {
+                if (res.success && res.automatic !== undefined) {
+                    console.log("LNT " + res.automatic)
                     setAutoLight(res.automatic)
                     setIsEnabledLight(res['is-on-current'])
                 }
@@ -73,173 +73,110 @@ export default function LivingRoom() {
             }
         };
         fetchData();
-    })
+    }, [time1])
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios({
-                    method: 'PATCH',
-                    url: 'http://localhost:3001/devices1',
-                    data: {automatic: autoLight}
+                    method: 'POST',
+                    url: 'http://192.168.0.105:3000/api/update/automatic',
+                    data: { id_device: 6, automatic: autoLight }
                 });
                 const res = response.data;
                 if (res.success) {
                     console.log(`res`, res)
-                    setAutoLight(res.automatic)
+                    //setAutoLight(res.automatic)
                 }
             } catch (error) {
                 console.log('Failed to get data from server: ', error);
             }
         };
         fetchData();
-    }, [changeAutoLight])
+    }, [autoLight])
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios({
-                    method: 'PATCH',
-                    url: 'http://localhost:3001/devices1',
-                    data: {'is-on-current': isEnabledLight}
+                    method: 'POST',
+                    url: 'http://192.168.0.105:3000/api/update/update-status-on',
+                    data: { id_device: 6, 'is-on-current': isEnabledLight }
                 });
                 const res = response.data;
                 if (res.success) {
                     console.log(`res`, res)
-                    setAutoLight(res.automatic)
+                    //setAutoLight(res.automatic)
+                    //setIsEnabledLight(res['is-on-current'])
                 }
             } catch (error) {
                 console.log('Failed to get data from server: ', error);
             }
         };
-        if(!autoLight)
-        {
-            fetchData();
-        }
+        fetchData();
 
     }, [isEnabledLight])
 
     useEffect(() => {
+        setTimeout(() => {
+            setTime2((time2 + 1) % 2)
+        }, 1000);
         const fetchData = async () => {
             try {
                 const response = await axios({
                     method: 'GET',
-                    url: 'http://localhost:3001/devices2'
+                    url: 'http://192.168.0.105:3000/api/5/get-status'
                 });
                 const res = response.data;
-                if (res.success && res.automatic) {
-                    setAutoAir(res.automatic)
-                    setIsEnabledAir(res['is-on-current'])
+                if (res.success && res.automatic != undefined) {
+                    // setAutoAir(res.automatic)
+                    // setIsEnabledAir(res['is-on-current'])
                 }
             } catch (error) {
                 console.log('Failed to get data from server: ', error);
             }
         };
         fetchData();
-    })
+    }, [time2])
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios({
-                    method: 'PATCH',
-                    url: 'http://localhost:3001/devices2',
-                    data: {automatic: autoAir}
+                    method: 'POST',
+                    url: 'http://192.168.0.105:3000/api/update/automatic',
+                    data: { id_device: 5, automatic: autoAir }
                 });
                 const res = response.data;
                 if (res.success) {
                     console.log(`res`, res)
-                    setAutoAir(res.automatic)
+                    //setAutoAir(res.automatic)
                 }
             } catch (error) {
                 console.log('Failed to get data from server: ', error);
             }
         };
         fetchData();
-    }, [changeAutoAir])
+    }, [autoAir])
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios({
-                    method: 'PATCH',
-                    url: 'http://localhost:3001/devices2',
-                    data: {'is-on-current': isEnabledAir}
+                    method: 'POST',
+                    url: 'http://192.168.0.105:3000/api/update/update-status-on',
+                    data: { id_device: 5, 'is-on-current': isEnabledAir }
                 });
                 const res = response.data;
                 if (res.success) {
                     console.log(`res`, res)
-                    setAutoLight(res.automatic)
+                    //setIsEnabledAir(res.automatic)
                 }
             } catch (error) {
                 console.log('Failed to get data from server: ', error);
             }
         };
-        if(!autoAir)
-        {
-            fetchData();
-        }
+        fetchData();
 
     }, [isEnabledAir])
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios({
-                    method: 'GET',
-                    url: 'http://localhost:3001/devices3'
-                });
-                const res = response.data;
-                if (res.success && res.automatic) {
-                    setAutoPurifier(res.automatic)
-                    setIsEnabledPurifier(res['is-on-current'])
-                }
-            } catch (error) {
-                console.log('Failed to get data from server: ', error);
-            }
-        };
-        fetchData();
-    })
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios({
-                    method: 'PATCH',
-                    url: 'http://localhost:3001/devices3',
-                    data: {automatic: autoPurifier}
-                });
-                const res = response.data;
-                if (res.success) {
-                    console.log(`res`, res)
-                    setAutoPurifier(res.automatic)
-                }
-            } catch (error) {
-                console.log('Failed to get data from server: ', error);
-            }
-        };
-        fetchData();
-    }, [changeAutoPurifier])
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios({
-                    method: 'PATCH',
-                    url: 'http://localhost:3001/devices3',
-                    data: {'is-on-current': isEnabledPurifier}
-                });
-                const res = response.data;
-                if (res.success) {
-                    console.log(`res`, res)
-                    setAutoLight(res.automatic)
-                }
-            } catch (error) {
-                console.log('Failed to get data from server: ', error);
-            }
-        };
-        if(!autoPurifier)
-        {
-            fetchData();
-        }
-
-    }, [isEnabledPurifier])
     const formatData = (datas, numColumns) => {
         const totalRows = Math.floor(datas.length / numColumns);
         let totalLastRow = datas.length - totalRows * numColumns;
@@ -270,15 +207,6 @@ export default function LivingRoom() {
                             source={require('../../../assets/Image/light.png')}
                         />
                     ) : null}
-                    {item.name === 'Air Purifier' ? (
-                        <Image
-                            style={[
-                                styles.image,
-                                { backgroundColor: Colors.blue_background },
-                            ]}
-                            source={require('../../../assets/Image/air-purifier.png')}
-                        />
-                    ) : null}
                 </View>
                 <Text
                     style={{
@@ -301,10 +229,10 @@ export default function LivingRoom() {
                             }
                             ios_backgroundColor="#3e3e3e"
                             onValueChange={() =>
-                                setIsEnabledAir(previousState => !previousState)}
+                                setIsEnabledAir(!isEnabledAir)}
                             value={isEnabledAir}
                         />
-                        <Text style={{marginLeft: 16,color: Colors.white}}>Auto:</Text>
+                        <Text style={{ marginLeft: 16, color: Colors.white }}>Auto:</Text>
                         <Switch
                             trackColor={{
                                 false: Colors.gray,
@@ -314,9 +242,7 @@ export default function LivingRoom() {
                                 autoAir ? Colors.purple : '#f4f3f4'
                             }
                             ios_backgroundColor="#3e3e3e"
-                            onValueChange={() =>
-                                {setAutoAir(previousState => !previousState)
-                                setChangeAutoAir(previousState => !previousState)}}
+                            onValueChange={() => { setAutoAir(!autoAir) }}
                             value={autoAir}
                         />
                     </View>
@@ -332,10 +258,10 @@ export default function LivingRoom() {
                                 isEnabledLight ? Colors.blue_main : '#f4f3f4'
                             }
                             ios_backgroundColor="#3e3e3e"
-                            onValueChange={() => setIsEnabledLight(previousState => !previousState)}
+                            onValueChange={() => setIsEnabledLight(!isEnabledLight)}
                             value={isEnabledLight}
                         />
-                        <Text style={{marginLeft: 16,color: Colors.white}}>Auto:</Text>
+                        <Text style={{ marginLeft: 16, color: Colors.white }}>Auto:</Text>
                         <Switch
                             trackColor={{
                                 false: Colors.gray,
@@ -345,46 +271,11 @@ export default function LivingRoom() {
                                 autoLight ? Colors.purple : '#f4f3f4'
                             }
                             ios_backgroundColor="#3e3e3e"
-                            onValueChange={() =>
-                                {setAutoLight(previousState => !previousState)
-                                setChangeAutoLight(previousState => !previousState)}}
+                            onValueChange={() => { setAutoLight(!autoLight) }}
                             value={autoLight}
                         />
                     </View>
                 ) : null}
-                {item.name === 'Air Purifier' ? (
-                    <View style={{ alignItems: 'flex-start', margin: 16, flexDirection: 'row' }}>
-                        <Switch
-                            trackColor={{
-                                false: Colors.gray,
-                                true: Colors.blue_main,
-                            }}
-                            thumbColor={
-                                isEnabledPurifier ? Colors.blue_main : '#f4f3f4'
-                            }
-                            ios_backgroundColor="#3e3e3e"
-                            onValueChange={() =>
-                                setIsEnabledPurifier(previousState => !previousState)}
-                            value={isEnabledPurifier}
-                        />
-                        <Text style={{marginLeft: 16,color: Colors.white}}>Auto:</Text>
-                        <Switch
-                            trackColor={{
-                                false: Colors.gray,
-                                true: Colors.purple,
-                            }}
-                            thumbColor={
-                                autoPurifier ? Colors.purple : '#f4f3f4'
-                            }
-                            ios_backgroundColor="#3e3e3e"
-                            onValueChange={() =>
-                                {setAutoPurifier(previousState => !previousState)
-                                setChangeAutoPurifier(previousState => !previousState)}}
-                            value={autoPurifier}
-                        />
-                    </View>
-                ) : null}
-
             </View>
         );
     };
@@ -452,7 +343,7 @@ export default function LivingRoom() {
                 style={{
                     flex: 1,
                     width: WIDTH,
-                    marginTop: datas.length >= 3 ? 60 : 240,
+                    marginTop: datas.length >= 3 ? 60 : 120,
                 }}>
                 <FlatList
                     data={formatData(datas, numColumns)}
