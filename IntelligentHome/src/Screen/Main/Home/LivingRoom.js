@@ -28,8 +28,12 @@ export default function LivingRoom() {
     const [time2, setTime2] = useState(0);
     const [isEnabledLight, setIsEnabledLight] = useState(false);
     const [isEnabledAir, setIsEnabledAir] = useState(false);
+    const [isGetAir, setisGetAir] = useState(false);
+    const [isGetLight, setisGetLight] = useState(false);
     const [autoLight, setAutoLight] = useState(true);
     const [autoAir, setAutoAir] = useState(true);
+
+    // get data: temp, humid, ppm
     useEffect(() => {
         setTimeout(() => {
             setTime(time + 1)
@@ -52,6 +56,8 @@ export default function LivingRoom() {
         };
         fetchData();
     }, [time])
+
+    // get status of light buld
     useEffect(() => {
         setTimeout(() => {
             setTime1((time1 + 1) % 2)
@@ -72,7 +78,8 @@ export default function LivingRoom() {
                 console.log('Failed to get data from server: ', error);
             }
         };
-        fetchData();
+        if(!isGetLight)
+            fetchData();
     }, [time1])
 
     useEffect(() => {
@@ -85,6 +92,7 @@ export default function LivingRoom() {
                 });
                 const res = response.data;
                 if (res.success) {
+                    setisGetLight(false);
                     console.log(`res`, res)
                     //setAutoLight(res.automatic)
                 }
@@ -92,6 +100,7 @@ export default function LivingRoom() {
                 console.log('Failed to get data from server: ', error);
             }
         };
+        setisGetLight(true);
         fetchData();
     }, [autoLight])
     useEffect(() => {
@@ -119,7 +128,7 @@ export default function LivingRoom() {
     useEffect(() => {
         setTimeout(() => {
             setTime2((time2 + 1) % 2)
-        }, 1000);
+        }, 3000);
         const fetchData = async () => {
             try {
                 const response = await axios({
@@ -128,14 +137,15 @@ export default function LivingRoom() {
                 });
                 const res = response.data;
                 if (res.success && res.automatic != undefined) {
-                    // setAutoAir(res.automatic)
-                    // setIsEnabledAir(res['is-on-current'])
+                    setAutoAir(res.automatic)
+                    setIsEnabledAir(res['is-on-current'])
                 }
             } catch (error) {
                 console.log('Failed to get data from server: ', error);
             }
         };
-        fetchData();
+        if(!isGetAir)
+            fetchData();
     }, [time2])
 
     useEffect(() => {
@@ -148,6 +158,7 @@ export default function LivingRoom() {
                 });
                 const res = response.data;
                 if (res.success) {
+                    setisGetAir(false);
                     console.log(`res`, res)
                     //setAutoAir(res.automatic)
                 }
@@ -155,6 +166,7 @@ export default function LivingRoom() {
                 console.log('Failed to get data from server: ', error);
             }
         };
+        setisGetAir(true);
         fetchData();
     }, [autoAir])
     useEffect(() => {
